@@ -1,0 +1,90 @@
+@import 'bs/bootstrap';
+@import 'variables';
+
+@import 'c3/c3.css';
+
+a:hover {
+  text-decoration: none;
+}
+
+.jumbotron {
+  background-image: url(http://bgm.tv/pic/wallpaper/01.png);
+//  background-size: contain;
+  .container {
+    background: linear-gradient(to right, fadeout(@body-bg, 20%), fadeout(@body-bg, 70%), fadeout(@body-bg, 100%));
+    border-radius: 10px;
+  }
+}
+
+.ctn-season {
+  font-size: @font-size-h2;
+  text-align: center;
+  img {
+    height: 120px;
+  }
+}
+
+.ctn-list {
+  .item {
+    background-color: @gray-lighter;
+    background-repeat: no-repeat;
+    background-position: right 1em top 1em;
+    border: 1px solid @gray-lighter;
+    border-radius: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+  }
+
+  .tags {
+    line-height: 2em;
+    height: 200px;
+    overflow: scroll;
+    padding: 10px;
+
+    a {
+      display: inline-block;
+      margin-right: 0.5em;
+    }
+    a:hover {
+      opacity: 1 !important;
+      transform: scale(1.2);
+    }
+  }
+
+  .c3-chart-arcs-title {
+    font-size: @font-size-h3;
+  }
+}
+
+
+.control-panel {
+  width: 400px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: @zindex-popover;
+  opacity: 0.5;
+  transition: 300ms;
+  transform-origin: bottom right;
+  transform: scale(0.6);
+  box-shadow: 0 0 5px @gray-light;
+
+  &:hover {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 15px @gray-dark;
+  }
+
+  margin: 10px;
+
+  .panel-body {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+xmp {
+  max-height: 200px;
+  overflow-y: auto;
+  &:extend(.well all);
+}

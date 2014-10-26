@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BGMRank</title>
+    <link rel="stylesheet" href="/css/style.min.css"/>
+</head>
+<body>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>
+            <strong>BGM</strong>Rank
+        </h1>
+
+        <p>
+            <a href="http://bgm.tv" target="_blank">bgm.tv</a>
+            新番人气排行
+        </p>
+    </div>
+</div>
+
+<div class="control-panel panel panel-warning">
+    <div class="panel-heading">
+        <h3 class="panel-title">preference</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="control-label col-sm-4">排序</div>
+                <div class="col-sm-8">
+                    <select class="form-control" name="order">
+                        <option value="none">不排序</option>
+                        <option value="fav">收藏</option>
+                        <option value="default" selected>人气</option>
+                        <option value="rater">评分人数</option>
+                        <option value="rate">评分</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-sm-4">评分</div>
+                <label class="col-sm-8 checkbox-inline">
+                    <input type="checkbox" name="rateBy" />
+                    仅显示有评分
+                </label>
+            </div>
+            <div class="form-group text-muted">
+                <div class="control-label col-sm-4">奇怪的开关</div>
+                <label class="col-sm-8 checkbox-inline">
+                    <input type="checkbox" name="hentai" />
+                    奇怪的开关
+                </label>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="container ctn-list">
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped active" style="width: 100%">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/template" id="tpl-list">
+    <div class="row item" style="background-image: url('<%=item.detail.cover%>')">
+        <div class="col-md-12">
+            <h2>
+                <a href="http://bgm.tv<%=item.detail.href%>" target="bgm">
+                    <%=item.name%>
+                    <small class="text-muted"><%=item.nameAlias%></small>
+                </a>
+            </h2>
+
+            <div class="col-md-4">
+                <div class="gauge-chart"></div>
+                <div class="audience-chart"></div>
+            </div>
+            <div class="col-md-8">
+                <div class="rate-chart"></div>
+                <div class="tags"></div>
+            </div>
+        </div>
+    </div>
+    <!--<xmp><%=JSON.stringify(item,null,2)%></xmp>-->
+</script>
+
+<script type="text/javascript" src="/js/rank.min.js"></script>
+</body>
+</html>
