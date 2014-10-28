@@ -37,13 +37,16 @@ a:hover {
 
   .tags {
     line-height: 2em;
-    height: 200px;
-    overflow: scroll;
+    height: 220px;
+    overflow-y: auto;
     padding: 10px;
 
     a {
       display: inline-block;
       margin-right: 0.5em;
+      .loli & {
+        font-size: @font-size-small;
+      }
     }
     a:hover {
       opacity: 1 !important;

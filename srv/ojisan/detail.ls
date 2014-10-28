@@ -26,9 +26,13 @@ module.exports = (id)->
 
   function parseAudience
     result = {}
+    sum = 0
 
     $ 'a', it .each ->
       result[href @ .replace /^.*\/(\w+)$/, '$1'] = parseInt text @
+      sum += parseInt text @
+
+    result.sum = sum
 
     result
 

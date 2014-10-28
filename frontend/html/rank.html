@@ -13,7 +13,9 @@
 <div class="jumbotron">
     <div class="container">
         <h1>
-            <strong>BGM</strong>Rank
+            <a href="/">
+                <strong>BGM</strong>Rank
+            </a>
         </h1>
 
         <p>
@@ -48,6 +50,13 @@
                     仅显示有评分
                 </label>
             </div>
+            <div class="form-group">
+                <div class="control-label col-sm-4">精简版</div>
+                <label class="col-sm-8 checkbox-inline">
+                    <input type="checkbox" name="small" />
+                    一屏展示更多条目
+                </label>
+            </div>
             <div class="form-group text-muted">
                 <div class="control-label col-sm-4">奇怪的开关</div>
                 <label class="col-sm-8 checkbox-inline">
@@ -71,6 +80,40 @@
 
 
 <script type="text/template" id="tpl-list">
+    <% if(option.small) { %>
+    <div class="row item loli">
+        <div class="col-md-12">
+            <h4 class="col-md-9">
+                <a href="http://bgm.tv<%=item.detail.href%>" target="bgm">
+                    <%=item.name%>
+                    <small class="text-muted"><%=item.nameAlias%></small>
+                </a>
+            </h4>
+            <div class="col-md-3 text-right">
+                <% if(item.rateBy) { %>
+                <%=item.rateBy%>人评分
+                <strong>
+                    <%=item.rate ? item.rate.toFixed(1) : '?'%>
+                </strong>
+                /
+                <% } %>
+                <%=item.detail.audience.sum%>人收藏
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="audience-chart"></div>
+        </div>
+        <div class="col-md-3">
+            <% if(item.rateBy) { %>
+            <div class="rate-chart"></div>
+            <% } %>
+        </div>
+        <div class="col-md-6">
+            <div class="tags"></div>
+        </div>
+    </div>
+    <% } else { %>
     <div class="row item" style="background-image: url('<%=item.detail.cover%>')">
         <div class="col-md-12">
             <h2>
@@ -90,7 +133,7 @@
             </div>
         </div>
     </div>
-    <!--<xmp><%=JSON.stringify(item,null,2)%></xmp>-->
+    <% } %>
 </script>
 
 <script type="text/javascript" src="/js/rank.min.js"></script>

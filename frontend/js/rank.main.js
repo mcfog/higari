@@ -17,8 +17,8 @@ riot.route(function (hash) {
 });
 
 var list = [];
-var option = {};
-var render = _.throttle(renderNow, 500, {
+var option = JSON.parse(localStorage.option || '{"order":"default"}');
+var render = _.throttle(renderNow, 150, {
     leading: false
 });
 
@@ -32,7 +32,7 @@ var routes = {
         $.get('/rank/season/' + season + '.json')
             .then(function (o) {
                 list = o;
-                renderNow();
+                optionChange(true);
             });
     }
 };
@@ -41,19 +41,41 @@ $(document)
     .on('lazybeforeunveil', '.ctn-list>.row', lazyload)
     .on('change', '.control-panel *', optionChange);
 
-optionChange();
-
-function optionChange() {
+function optionChange(event) {
     var $cp = $('.control-panel');
-    option.order = $('[name=order]', $cp).val();
+    var init = event === true;
+
+    input('order');
     checkbox('hentai');
     checkbox('rateBy');
+    checkbox('small');
 
-    function checkbox(name) {
-        option[name] = $('[name=' + name + ']', $cp).prop('checked');
+    if(!init) {
+        localStorage.option = JSON.stringify(option);
     }
 
-    render();
+    init ? renderNow() : render();
+
+    function checkbox(name) {
+        var $control = $('[name=' + name + ']', $cp);
+        if(init) {
+            $control.prop('checked', !!option[name]);
+            return;
+        }
+
+        option[name] = !!$control.prop('checked');
+    }
+
+    function input(name) {
+        var $control = $('[name=' + name + ']', $cp);
+        if(init) {
+            $control.val(option[name]);
+            return;
+        }
+
+        option[name] = $control.val();
+    }
+
 }
 
 function filter(list) {
@@ -122,7 +144,10 @@ function renderNow() {
         var tpl = $('#tpl-list').html();
         filter(list).forEach(function (item, idx) {
             var $row = $('<div class="row lazyload">').html(
-                _.template(tpl, {item: item})
+                _.template(tpl, {
+                    item: item,
+                    option: option
+                })
             ).data('row-item', item);
             $list.append($row);
         });
@@ -164,7 +189,7 @@ function renderDonut(item, id) {
 
     return c3.generate({
         size: {
-            height: 300
+            height: option.small ? 200 : 300
         },
         data: {
             columns: columns,
@@ -172,7 +197,7 @@ function renderDonut(item, id) {
             type: 'donut'
         },
         donut: {
-            title: sum + '人收藏'
+            title: option.small ? '' : sum + '人收藏'
         },
         bindto: '#' + id
     });
@@ -197,7 +222,7 @@ function renderRate(item, id) {
         data: {
             columns: [column],
             order: null,
-            type: 'area-spline'
+            type: option.small ? 'bar' : 'area-spline'
         },
         axis: {
             x: {
