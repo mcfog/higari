@@ -27,6 +27,8 @@ module.exports = (url, expire = 3600)->
     it || prequest url, option
 #    prequest url, option
     .spread (req, body)->
+      throw new Error 'content malformed' if -1 is body.indexOf 'bangumi'
+
       client.setexAsync cacheKey, expire, body
       .return body
   .then ->
