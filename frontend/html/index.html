@@ -40,7 +40,11 @@
     <div class="col-xs-6 col-md-4">
         <a class="thumbnail" href="<%=season.href%>">
             <%=season.name%>
+            <% if (season.top && season.top.cover) { %>
             <img src="<%=season.top.cover.replace(/cover\/s/, 'cover/m')%>" class="img-responsive"/>
+            <% } else { %>
+            <img src="http://lain.bgm.tv/pic/cover/c/9b/e7/59392_05W7s.jpg" class="img-responsive"/>
+            <% } %>
         </a>
     </div>
     <% }); %>
