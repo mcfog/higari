@@ -7,9 +7,10 @@ setTimeout warmup
 
 function warmup
   console.log 'start warmup'
-  Promise.all currentSeasons!map ([year, month])->
+  Promise.reduce currentSeasons!, (, [year, month])->
     getList "/anime/browser/airtime/#{year}-#{month}"
-    .map (entry)->
+    .reduce (, entry)->
+      console.log "warmup: #{entry.id}"
       getDetail entry.id
 
   .then ->

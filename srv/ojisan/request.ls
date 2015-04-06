@@ -20,7 +20,7 @@ option =
   pool: {maxSockets: 5}
 
 Promise.using open!, (client)->
-  args = [COLLECTION, {+capped, size: 100_000_000}];
+  args = [COLLECTION, {+capped, size: 1000_000_000}];
   <- (pCall client, \createCollection, args)then
 
   args = [{
@@ -32,8 +32,6 @@ Promise.using open!, (client)->
 
 
 module.exports = (url, expire = 3600)->
-
-  cacheKey = "#{PREFIX}#{url}"
 
   client <- Promise.using open!
 
