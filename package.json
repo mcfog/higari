@@ -36,7 +36,7 @@
     "bluebird": "^2.3.6",
     "cheerio": "^0.17.0",
     "lodash-node": "^2.4.1",
-    "redis": "^0.12.1",
+    "mongodb": "^2.0.25",
     "request": "^2.46.0"
   }
 }
