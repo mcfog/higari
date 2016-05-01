@@ -271,25 +271,41 @@ function renderTags(item, $tags) {
     var cssClass = 'label-primary label-info label-success label-warning label-danger'.split(/ /g);
     var max = 0;
     var year = new Date().getFullYear();
-    item.detail.tags.forEach(function (tag) {
+    var tags = item.detail.tags.filter(function (tag) {
+        return -1 === tag.text.indexOf(year);
+    });
+
+    tags.forEach(function (tag) {
         max = Math.max(max, tag.count);
     });
     var rand = require('seedrandom')(item.id);
 
-    item.detail.tags
+    function pick() {
+        var ans = parseInt(rand() * cssClass.length);
+
+        if (ans == pick.last) {
+            ans = parseInt(rand() * cssClass.length);
+        }
+
+        if (ans == pick.last) {
+            return pick.last = ans = parseInt(rand() * cssClass.length);
+        }
+
+        return pick.last = ans;
+    }
+
+    tags
 //        .sort(function (a, b) {
 //            return b.count - a.count;
 //        })
-        .filter(function (tag) {
-            return -1 === tag.text.indexOf(year);
-        })
         .forEach(function (tag) {
             var $tag = $('<a>');
             var weight = Math.pow(tag.count / max, 0.5);
             $tag
+                .attr('title', '* ' + tag.count)
                 .addClass('label')
-                .addClass(cssClass[parseInt(rand() * cssClass.length)])
-                .css('opacity', Math.max(0.3, weight))
+                .addClass(cssClass[pick()])
+                .css('opacity', 0.4 + 0.8 * weight)
                 .css('transform', 'scale('+(Math.min(1, 0.8 + 0.3 * weight))+')')
                 .text(tag.text);
 
