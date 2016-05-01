@@ -1,3 +1,3 @@
-require('LiveScript');
+require('livescript');
 
 module.exports = require('./srv');

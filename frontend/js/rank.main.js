@@ -29,7 +29,7 @@ var routes = {
             return;
         }
 
-        $.get('/rank/season/' + season + '.json')
+        $.get('http://7xqy5q.com1.z0.glb.clouddn.com/' + season + '.json')
             .then(function (o) {
                 list = o;
                 optionChange(true);

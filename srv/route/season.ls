@@ -1,3 +1,6 @@
+stream = require \stream
+qiniu = require \qiniu
+
 Promise = require \bluebird
 getList = require \../ojisan/list
 getDetail = require \../ojisan/detail
@@ -5,17 +8,44 @@ getDetail = require \../ojisan/detail
 setInterval warmup, 1800_000
 setTimeout warmup
 
+[qiniu.conf.ACCESS_KEY, qiniu.conf.SECRET_KEY] = (process.env.QINIU || "").split /:/
+BUCKET_NAME = process.env.QINIU_BUCKET
+
 function warmup
   console.log 'start warmup'
-  Promise.reduce currentSeasons!, (, [year, month])->
+
+  Promise.reduce [,...currentSeasons!], (, [year, month])->
     getList "/anime/browser/airtime/#{year}-#{month}"
-    .reduce (, entry)->
-      console.log "warmup: #{entry.id}"
+    .map (entry)->
       getDetail entry.id
+      .then ->
+        delete it.wiki
+        delete it.summary
+        delete it.character
+        delete it.relation
+        it.tags.forEach -> delete it.href
+
+        entry.detail = it
+      .then -> entry
+    .then ->
+      upload "#{year}-#{month}.json", (JSON.stringify it) 
+
+  .then ->
+    populateIndex!then ->
+      upload "index.json", (JSON.stringify it) 
 
   .then ->
     console.log 'end warmup'
 
+function upload name, content
+  rs = new stream.Readable
+    ..push content
+    ..push null
+    
+  putPolicy = new qiniu.rs.PutPolicy "#{BUCKET_NAME}:#{name}"
+  extra = new qiniu.io.PutExtra
+  
+  (Promise.promisify qiniu.io.putReadable) putPolicy.token!, name, rs, extra
 
 function currentSeasons
 
@@ -45,27 +75,30 @@ function seasonOffset(season, offset)
 
     [newYear, newMonth]
 
+function populateIndex
+
+  Promise.all currentSeasons!map ([year, month])->
+    getList "/anime/browser/airtime/#{year}-#{month}"
+    .then ->
+      top = it.sort (a,b)->
+        return -1 if !b.rate
+        return 1 if !a.rate
+        b.rate - a.rate
+      .0
+
+      {
+        name: "#{year}年#{month}月"
+        href: "/rank.html\#season/#{year}-#{month}"
+        top
+      }
+
 app <- ->
   module.exports = it
 
 req, res, next <- app.get '/rank/index.json'
 
-Promise.all currentSeasons!map ([year, month])->
-  getList "/anime/browser/airtime/#{year}-#{month}"
-  .then ->
-    top = it.sort (a,b)->
-      return -1 if !b.rate
-      return 1 if !a.rate
-      b.rate - a.rate
-    .0
 
-    {
-      name: "#{year}年#{month}月"
-      href: "/rank.html\#season/#{year}-#{month}"
-      top
-    }
-
-.then -> res.json it
+populateIndex!then -> res.json it
 .timeout 30_000
 .catch ->
   console.error it
