@@ -29,7 +29,7 @@ var routes = {
             return;
         }
 
-        $.get('http://7xqy5q.com1.z0.glb.clouddn.com/' + season + '.json')
+        $.get('http://7xqy5q.com1.z0.glb.clouddn.com/' + season + '.json?' + (localStorage.timestamp || parseInt(Date.now() / 7200000)))
             .then(function (o) {
                 list = o;
                 optionChange(true);
