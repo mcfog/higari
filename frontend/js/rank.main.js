@@ -1,10 +1,3 @@
-var $ = require('jquery');
-var _ = require('lodash');
-var riot = require('riotjs');
-var d3 = require('d3');
-var c3 = require('c3/c3');
-
-require('lazysizes');
 
 riot.route(function (hash) {
     var parts = hash.slice(1).split(/\//g);
@@ -144,7 +137,7 @@ function renderNow() {
         var tpl = $('#tpl-list').html();
         filter(list).forEach(function (item, idx) {
             var $row = $('<div class="row lazyload">').html(
-                _.template(tpl, {
+                _.template(tpl)({
                     item: item,
                     option: option
                 })
@@ -278,7 +271,7 @@ function renderTags(item, $tags) {
     tags.forEach(function (tag) {
         max = Math.max(max, tag.count);
     });
-    var rand = require('seedrandom')(item.id);
+    var rand = Math.seedrandom(item.id, {global: false});
 
     function pick() {
         var ans = parseInt(rand() * cssClass.length);
