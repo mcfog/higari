@@ -289,7 +289,7 @@ function renderTags(item, $tags) {
             $tag
                 .addClass('label')
                 .addClass(cssClass[parseInt(rand() * cssClass.length)])
-                .css('opacity', Math.max(0.1, weight))
+                .css('opacity', Math.max(0.3, weight))
                 .css('transform', 'scale('+(Math.min(1, 0.8 + 0.3 * weight))+')')
                 .text(tag.text);
 
