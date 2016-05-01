@@ -114,7 +114,7 @@ function filter(list) {
 
 function hentai(item) {
     return item.detail.tags.filter(function (tag) {
-        return -1 !== _.indexOf(['里番', 'H', '18禁'], tag.text);
+        return -1 !== _.indexOf(['里番', '肉番', 'H', '18禁'], tag.text);
     }).length > 0;
 }
 
@@ -285,12 +285,12 @@ function renderTags(item, $tags) {
         })
         .forEach(function (tag) {
             var $tag = $('<a>');
-            var weight = Math.max(0.1, Math.pow(tag.count / max, 0.5));
+            var weight = Math.pow(tag.count / max, 0.5);
             $tag
                 .addClass('label')
                 .addClass(cssClass[parseInt(rand() * cssClass.length)])
-                .css('opacity', weight)
-                .css('transform', weight > 0.8 ? 'scale(1.1)' : '')
+                .css('opacity', Math.max(0.1, weight))
+                .css('transform', 'scale('+(Math.min(1, 0.8 + 0.3 * weight))+')')
                 .text(tag.text);
 
             $tags.append($tag).append(' ');
