@@ -6,7 +6,7 @@ var mergeStream = require('merge-stream');
 var globs = {
     js: 'frontend/js/**/*.js',
     less: 'frontend/less/**/*.main.less',
-    html: 'frontend/html/**/*.html',
+    html: 'frontend/html/**/*',
     assets: [
         'frontend/fonts/**/*',
         'frontend/images/**/*'

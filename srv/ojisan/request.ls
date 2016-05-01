@@ -4,11 +4,15 @@ request = require \request
 
 prequest = Promise.promisify request
 
-prequest url, option
-.spread (, body)->
-  throw new Error 'content malformed' if -1 is body.indexOf 'bangumi'
+option =
+  pool: {maxSockets: 5}
 
-  body
+module.exports = (url)->
+  prequest url, option
+  .spread (, body)->
+    throw new Error 'content malformed' if -1 is body.indexOf 'bangumi'
 
-.then ->
-  cheerio.load it
+    body
+
+  .then ->
+    cheerio.load it
