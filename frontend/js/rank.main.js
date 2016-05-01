@@ -274,6 +274,7 @@ function renderTags(item, $tags) {
     item.detail.tags.forEach(function (tag) {
         max = Math.max(max, tag.count);
     });
+    var rand = require('seedrandom')(item.id);
 
     item.detail.tags
 //        .sort(function (a, b) {
@@ -287,7 +288,7 @@ function renderTags(item, $tags) {
             var weight = Math.max(0.1, Math.pow(tag.count / max, 0.5));
             $tag
                 .addClass('label')
-                .addClass(cssClass[parseInt(Math.random() * cssClass.length)])
+                .addClass(cssClass[parseInt(rand() * cssClass.length)])
                 .css('opacity', weight)
                 .css('transform', weight > 0.8 ? 'scale(1.1)' : '')
                 .text(tag.text);

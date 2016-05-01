@@ -38,6 +38,7 @@
     "livescript": "^1.4.0",
     "lodash-node": "^2.4.1",
     "qiniu": "^6.1.10",
-    "request": "^2.46.0"
+    "request": "^2.46.0",
+    "seedrandom": "^2.4.2"
   }
 }
