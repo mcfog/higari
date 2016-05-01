@@ -32,7 +32,7 @@ function fetchPage uri, page
     rateBy = rate && parseInt(findText '.tip_j' .replace /[^\d]*(\d+)[^\d]*/, '$1')
     {
       id: parseInt($item.attr \id .replace /item_/, '')
-      cover: $item.find 'img.cover' .attr \src
+      cover: $item.find 'img.cover[src]' .attr \src
       name: findText 'a.l'
       nameAlias: findText 'small.grey'
       info: findText '.info'
