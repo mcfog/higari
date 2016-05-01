@@ -82,8 +82,10 @@ if ! git diff --exit-code --quiet --cached; then
 	exit 1
 fi
 
-rm -rf $deploy_directory
-hugo -t glimmervoid
+if [ $build ]; then
+	rm -rf $deploy_directory
+	gulp build
+fi
 
 disable_expanded_output
 git fetch --force $repo $deploy_branch:$deploy_branch
