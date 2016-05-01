@@ -1,19 +1,11 @@
-getList = require \../ojisan/list
-getDetail = require \../ojisan/detail
+generator = require \./generator
 
 app <- ->
   module.exports = it
 
 req, res, next <- app.get /^\/rank\/season\/(\d{4}-\d{1,2}).json/
 
-getList "/anime/browser/airtime/#{req.params.0}"
-.map (entry)->
-  getDetail entry.id
-  .then ->
-    entry.detail = it
-
-    entry
-
+generator.populateSeason req.params.0
 .then -> res.json it
 .timeout 30_000
 .catch ->
