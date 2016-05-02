@@ -39,7 +39,7 @@ module.exports = (id)->
   function parseTag
     href: href @
     text: text @
-    count: parseInt ($ @)next!text!replace /^.*(\d+).*$/, '$1'
+    count: parseInt ($ @)next!text!replace /^.*?(\d+).*?$/, '$1'
 
   function parseRate
     rate: text $ '.label', @

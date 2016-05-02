@@ -1,12 +1,14 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
+var webpack = require('webpack-stream');
+
 var webpackConfig = require('./webpack.config.js');
 var mergeStream = require('merge-stream');
 
 var globs = {
     js: 'frontend/js/**/*.js',
     less: 'frontend/less/**/*.main.less',
-    html: 'frontend/html/**/*.html',
+    html: 'frontend/html/**/*',
     assets: [
         'frontend/fonts/**/*',
         'frontend/images/**/*'
@@ -22,14 +24,14 @@ gulp.task('webpack', function () {
     webpackConfig.refreshEntry();
 
     return gulp.src(globs.js)
-        .pipe($.webpack(webpackConfig))
+        .pipe(webpack(webpackConfig))
         .pipe(gulp.dest('public/js'));
 });
 
 gulp.task('css', function () {
     return gulp.src(globs.less)
         .pipe($.less())
-        .pipe($.minifyCss())
+        .pipe($.cleanCss())
         .pipe($.rename(function (path) {
             path.basename = path.basename.replace(/\.main$/, '.min');
         }))
@@ -80,7 +82,7 @@ gulp.task('watch', ['build'], function () {
 });
 
 gulp.task('server', function() {
-    require('./server');
+    // require('./server');
 });
 
 gulp.task('default', function () {

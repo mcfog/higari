@@ -1,7 +1,6 @@
 var webpack = require('webpack');
 var CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 var glob = require('glob');
-var fixedDirectoryDescriptionFilePlugin = require('webpack-bower-resolver');
 
 function getEntry() {
     var entry = {};
@@ -23,16 +22,12 @@ module.exports = {
     resolve: {
         modulesDirectories: [
             'node_modules',
-            'bower_components',
             'lib'
         ]
     },
     plugins: [
 //        new CommonsChunkPlugin('common.min.js', 5),
-        new webpack.optimize.UglifyJsPlugin(),
-        new webpack.ResolverPlugin(
-            new fixedDirectoryDescriptionFilePlugin('bower.json', ['main'])
-        )
+        // new webpack.optimize.UglifyJsPlugin()
     ],
     devtool: 'source-map',
     output: {

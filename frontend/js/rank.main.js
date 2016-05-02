@@ -1,10 +1,3 @@
-var $ = require('jquery');
-var _ = require('lodash');
-var riot = require('riotjs');
-var d3 = require('d3');
-var c3 = require('c3/c3');
-
-require('lazysizes');
 
 riot.route(function (hash) {
     var parts = hash.slice(1).split(/\//g);
@@ -29,7 +22,7 @@ var routes = {
             return;
         }
 
-        $.get('/rank/season/' + season + '.json')
+        $.get('http://7xqy5q.com1.z0.glb.clouddn.com/' + season + '.json?' + (localStorage.timestamp || parseInt(Date.now() / 7200000)))
             .then(function (o) {
                 list = o;
                 optionChange(true);
@@ -114,7 +107,7 @@ function filter(list) {
 
 function hentai(item) {
     return item.detail.tags.filter(function (tag) {
-        return -1 !== _.indexOf(['里番', 'H', '18禁'], tag.text);
+        return -1 !== _.indexOf(['里番', '肉番', 'H', '18禁'], tag.text);
     }).length > 0;
 }
 
@@ -144,7 +137,7 @@ function renderNow() {
         var tpl = $('#tpl-list').html();
         filter(list).forEach(function (item, idx) {
             var $row = $('<div class="row lazyload">').html(
-                _.template(tpl, {
+                _.template(tpl)({
                     item: item,
                     option: option
                 })
@@ -271,25 +264,42 @@ function renderTags(item, $tags) {
     var cssClass = 'label-primary label-info label-success label-warning label-danger'.split(/ /g);
     var max = 0;
     var year = new Date().getFullYear();
-    item.detail.tags.forEach(function (tag) {
-        max = Math.max(max, tag.count);
+    var tags = item.detail.tags.filter(function (tag) {
+        return -1 === tag.text.indexOf(year);
     });
 
-    item.detail.tags
+    tags.forEach(function (tag) {
+        max = Math.max(max, tag.count);
+    });
+    var rand = Math.seedrandom(item.id, {global: false});
+
+    function pick() {
+        var ans = parseInt(rand() * cssClass.length);
+
+        if (ans == pick.last) {
+            ans = parseInt(rand() * cssClass.length);
+        }
+
+        if (ans == pick.last) {
+            return pick.last = ans = parseInt(rand() * cssClass.length);
+        }
+
+        return pick.last = ans;
+    }
+
+    tags
 //        .sort(function (a, b) {
 //            return b.count - a.count;
 //        })
-        .filter(function (tag) {
-            return -1 === tag.text.indexOf(year);
-        })
         .forEach(function (tag) {
             var $tag = $('<a>');
-            var weight = Math.max(0.1, Math.pow(tag.count / max, 0.5));
+            var weight = Math.pow(tag.count / max, 0.5);
             $tag
+                .attr('title', '* ' + tag.count)
                 .addClass('label')
-                .addClass(cssClass[parseInt(Math.random() * cssClass.length)])
-                .css('opacity', weight)
-                .css('transform', weight > 0.8 ? 'scale(1.1)' : '')
+                .addClass(cssClass[pick()])
+                .css('opacity', 0.4 + 0.8 * weight)
+                .css('transform', 'scale('+(Math.min(1, 0.8 + 0.3 * weight))+')')
                 .text(tag.text);
 
             $tags.append($tag).append(' ');
