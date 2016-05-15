@@ -11,18 +11,20 @@ BUCKET_NAME = process.env.QINIU_BUCKET
 export populateIndex
 export populateSeason
 export warmup
+export currentSeasons
+export oldSeasons
 
-function warmup
+function warmup seasons = currentSeasons!
   console.log 'start warmup'
 
-  Promise.reduce [,...currentSeasons!], (, [year, month])->
+  Promise.reduce [,...seasons], (, [year, month])->
     populateSeason "#{year}-#{month}"
     .then ->
       upload "#{year}-#{month}.json", (JSON.stringify it) 
 
   .then ->
     populateIndex!then ->
-      upload "index.json", (JSON.stringify it) 
+      upload "index-all.json", (JSON.stringify it) 
 
   .then ->
     console.log 'end warmup'
@@ -38,20 +40,19 @@ function upload name, content
   (Promise.promisify qiniu.io.putReadable) putPolicy.token!, name, rs, extra
 
 function currentSeasons
+  [seasonOffset currentSeason!, o for o in [1 to -4]]
 
+function oldSeasons
+  [seasonOffset currentSeason!, o for o in [-5 to -14]]
+
+function currentSeason
   now = new Date!
   month = [1,1,1,4,4,4,7,7,7,10,10,10]
   year = now.getFullYear!
 
   month = month[now.getMonth!]
 
-  current = [year, month];
-  seasons = [];
-
-
-  [seasons.push seasonOffset current, o for o in [1 to -4]]
-
-  seasons
+  [year, month]
 
 function seasonOffset(season, offset)
 
@@ -66,8 +67,12 @@ function seasonOffset(season, offset)
     [newYear, newMonth]
 
 function populateIndex
-
-  Promise.all currentSeasons!map ([year, month])->
+  Promise.all [(seasonsIndex currentSeasons!), (seasonsIndex oldSeasons!)]
+  .then ([current, old])->
+    {current, old}
+  
+function seasonsIndex seasons
+  Promise.all seasons.map ([year, month])->
     getList "/anime/browser/airtime/#{year}-#{month}"
     .then ->
       top = it.sort (a,b)->
