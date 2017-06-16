@@ -106,9 +106,11 @@ function filter(list) {
 }
 
 function hentai(item) {
-    return item.detail.tags.filter(function (tag) {
-        return -1 !== _.indexOf(['里番', '肉番', 'H', '18禁'], tag.text);
-    }).length > 0;
+    return 'hentai' in item.detail 
+        ? item.detail.hentai
+        : (item.detail.tags.filter(function (tag) {
+            return -1 !== _.indexOf(['里番', '肉番', 'H', '18禁'], tag.text);
+        }).length > 0);
 }
 
 function goodAudience(item) {

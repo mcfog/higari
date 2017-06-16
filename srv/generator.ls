@@ -92,6 +92,10 @@ function populateSeason season
   .map (entry)->
     getDetail entry.id
     .then ->
+
+      it.hentai = 
+        (it.tags.filter -> -1 isnt ['里番', '肉番', 'H', '18禁']indexOf it.text)length > 0
+        and !it.wiki.some -> -1 isnt it.key.indexOf '电视台'
       delete it.wiki
       delete it.summary
       delete it.character
