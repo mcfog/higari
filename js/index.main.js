@@ -1,0 +1,1 @@
+$.get("http://7xqy5q.com1.z0.glb.clouddn.com/index-all.json?"+(localStorage.timestamp||parseInt(Date.now()/72e5))).then(function(t){$(".ctn-season").html(_.template($("#tpl-season").html())(t))});
