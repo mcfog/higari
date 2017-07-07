@@ -1,8 +1,5 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
-var webpack = require('webpack-stream');
-
-var webpackConfig = require('./webpack.config.js');
 var mergeStream = require('merge-stream');
 
 var globs = {
@@ -15,16 +12,9 @@ var globs = {
     ]
 };
 
-gulp.task('js', ['webpack'], function () {
-    return gulp.src('public/js/**/*.js')
-//        .pipe($.uglify())
-        .pipe(gulp.dest('public/js'));
-});
-gulp.task('webpack', function () {
-    webpackConfig.refreshEntry();
-
-    return gulp.src(globs.js)
-        .pipe(webpack(webpackConfig))
+gulp.task('js', [], function () {
+    return gulp.src('frontend/js/**/*.js')
+        .pipe($.uglify())
         .pipe(gulp.dest('public/js'));
 });
 
