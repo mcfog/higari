@@ -5,8 +5,12 @@ Promise = require \bluebird
 getList = require \./ojisan/list
 getDetail = require \./ojisan/detail
 
+fs = require \fs
+pfs = Promise.promisifyAll fs
+
 [qiniu.conf.ACCESS_KEY, qiniu.conf.SECRET_KEY] = (process.env.QINIU || "").split /:/
 BUCKET_NAME = process.env.QINIU_BUCKET
+OUTPUT_HOME = process.env.OUTPUT_HOME
 
 export populateIndex
 export populateSeason
@@ -30,6 +34,15 @@ function warmup seasons = currentSeasons!
     console.log 'end warmup'
 
 function upload name, content
+  new Promise (resolve)->
+    err, fp <- fs.open "#{OUTPUT_HOME}/#{name}", "w"
+    <- fs.write fp, content
+    <- fs.close fp
+
+    resolve!
+
+
+function uploadQiniu name, content
   rs = new stream.Readable
     ..push content
     ..push null
