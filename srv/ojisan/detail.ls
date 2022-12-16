@@ -2,7 +2,7 @@ Promise = require \bluebird
 req = require \./request
 
 module.exports = (id)->
-  $ <- (req "http://bgm.tv/subject/#{id}")then
+  $ <- (req "https://bgm.tv/subject/#{id}")then
 
   function text
     ($ it)text!

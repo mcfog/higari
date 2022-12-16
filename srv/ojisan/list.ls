@@ -15,7 +15,7 @@ module.exports = (uri)->
     .then -> allItems
 
 function fetchPage uri, page
-  $ <- (req "http://bgm.tv#{uri}?page=#{page}")then
+  $ <- (req "https://bgm.tv#{uri}?page=#{page}")then
 
   maxPage = $('.page_inner a.p')map ->
     parseInt($ @ .attr \href .match /\?page=(\d+)/ .1)

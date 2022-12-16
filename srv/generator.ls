@@ -36,6 +36,7 @@ function warmup seasons = currentSeasons!
 function upload name, content
   new Promise (resolve)->
     err, fp <- fs.open "#{OUTPUT_HOME}/#{name}", "w"
+    throw that if err
     <- fs.write fp, content
     <- fs.close fp
 
