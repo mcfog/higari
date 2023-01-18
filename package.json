@@ -29,13 +29,16 @@
     "merge-stream": "^0.1.6"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.252.0",
     "bluebird": "^2.3.6",
     "bootstrap": "^3.3.6",
     "c3": "^0.4.11-rc4",
     "cheerio": "^0.17.0",
+    "dotenv": "^16.0.3",
     "limiter": "^2.1.0",
     "livescript": "^1.4.0",
     "lodash-node": "^3.10.2",
+    "node-cron": "^3.0.2",
     "qiniu": "^6.1.10",
     "request": "^2.46.0"
   }

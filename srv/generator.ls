@@ -1,16 +1,12 @@
+{ S3Client, PutObjectCommand } = require("@aws-sdk/client-s3")
 stream = require \stream
-qiniu = require \qiniu
-
 Promise = require \bluebird
 getList = require \./ojisan/list
 getDetail = require \./ojisan/detail
-
 fs = require \fs
 pfs = Promise.promisifyAll fs
 
-[qiniu.conf.ACCESS_KEY, qiniu.conf.SECRET_KEY] = (process.env.QINIU || "").split /:/
-BUCKET_NAME = process.env.QINIU_BUCKET
-OUTPUT_HOME = process.env.OUTPUT_HOME
+{OUTPUT_HOME, S3_ENDPOINT, S3_BUCKET} = process.env
 
 export populateIndex
 export populateSeason
@@ -19,7 +15,7 @@ export currentSeasons
 export oldSeasons
 
 function warmup seasons = currentSeasons!
-  console.log 'start warmup'
+  console.log new Date(), 'start warmup'
 
   Promise.reduce [,...seasons], (, [year, month])->
     populateSeason "#{year}-#{month}"
@@ -31,9 +27,20 @@ function warmup seasons = currentSeasons!
       upload "index-all.json", (JSON.stringify it) 
 
   .then ->
-    console.log 'end warmup'
+    console.log new Date(), 'end warmup'
 
+
+s3 = new S3Client {endpoint: S3_ENDPOINT}
 function upload name, content
+  cmd = new PutObjectCommand {
+    Body: content
+    Bucket: S3_BUCKET
+    Key: name
+  }
+
+  s3.send(cmd)
+
+function uploadLocal name, content
   new Promise (resolve)->
     err, fp <- fs.open "#{OUTPUT_HOME}/#{name}", "w"
     throw that if err
@@ -42,16 +49,6 @@ function upload name, content
 
     resolve!
 
-
-function uploadQiniu name, content
-  rs = new stream.Readable
-    ..push content
-    ..push null
-    
-  putPolicy = new qiniu.rs.PutPolicy "#{BUCKET_NAME}:#{name}"
-  extra = new qiniu.io.PutExtra
-  
-  (Promise.promisify qiniu.io.putReadable) putPolicy.token!, name, rs, extra
 
 function currentSeasons
   [seasonOffset currentSeason!, o for o in [1 to -4]]
