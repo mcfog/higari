@@ -36,6 +36,7 @@ function upload name, content
     Body: content
     Bucket: S3_BUCKET
     Key: name
+    ContentType: 'application/json'
   }
 
   s3.send(cmd)
