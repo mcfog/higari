@@ -22,7 +22,7 @@ var routes = {
             return;
         }
 
-        $.get('//rd2.mcfog.wang/' + season + '.json?' + (localStorage.timestamp || parseInt(Date.now() / 7200000)))
+        $.get('//rank-data.mcfog.wang/' + season + '.json?' + (localStorage.timestamp || parseInt(Date.now() / 7200000)))
             .then(function (o) {
                 list = o;
                 optionChange(true);
