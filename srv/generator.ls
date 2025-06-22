@@ -15,7 +15,7 @@ export currentSeasons
 export oldSeasons
 
 function warmup seasons = currentSeasons!
-  console.log new Date(), 'start warmup'
+  console.log new Date(), 'start warmup', seasons
 
   Promise.reduce [,...seasons], (, [year, month])->
     populateSeason year, month
