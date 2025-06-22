@@ -18,7 +18,7 @@ function fetchPage uri, page
   $ <- (req "https://bgm.tv#{uri}?page=#{page}")then
 
   maxPage = $('.page_inner a.p')map ->
-    parseInt($ @ .attr \href .match /\?page=(\d+)/ .1)
+    parseInt($ @ .attr \href .match /\bpage=(\d+)/ .1)
   .toArray!sort (a,b)-> b - a
   .0
 

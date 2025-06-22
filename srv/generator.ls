@@ -18,7 +18,7 @@ function warmup seasons = currentSeasons!
   console.log new Date(), 'start warmup'
 
   Promise.reduce [,...seasons], (, [year, month])->
-    populateSeason "#{year}-#{month}"
+    populateSeason year, month
     .then ->
       upload "#{year}-#{month}.json", (JSON.stringify it) 
 
@@ -67,16 +67,15 @@ function currentSeason
   [year, month]
 
 function seasonOffset(season, offset)
+    y = season[0]
+    m = season[1] - 1 + 3 * offset
+    while m < 0
+        m += 12
+        y -= 1
+    y += parseInt(m / 12)
+    m = m % 12
 
-    newYear = season[0]
-    while offset < 0
-        offset += 4
-        newYear -= 1
-    newMonth = season[1] + 3 * offset
-    newYear += parseInt(newMonth / 12)
-    newMonth = newMonth % 12
-
-    [newYear, newMonth]
+    [y, m + 1]
 
 function populateIndex
   Promise.all [(seasonsIndex currentSeasons!), (seasonsIndex oldSeasons!)]
@@ -98,13 +97,13 @@ function seasonsIndex seasons
         href: "/rank.html\#season/#{year}-#{month}"
         top
       }
-      
-function populateSeason season
-  getList "/anime/browser/airtime/#{season}"
-  .map (entry)->
-    getDetail entry.id
-    .then ->
 
+function populateSeason(year, month)
+  Promise.all [-1, 0, 1].map (x)->
+    [y, m] = seasonOffset [year, month+x], 0
+    getList "/anime/browser/airtime/#{y}-#{m}"
+  .map (entries)->
+    Promise.all entries.map (entry)->(getDetail entry.id).then ->
       it.hentai = 
         (it.tags.filter -> -1 isnt ['里番', '肉番', 'H', '18禁']indexOf it.text)length > 0
         and !it.wiki.some -> -1 isnt it.key.indexOf '电视台'
@@ -115,4 +114,7 @@ function populateSeason season
       it.tags.forEach -> delete it.href
 
       entry.detail = it
-    .then -> entry
+      entry
+  .then -> it.flat!
+    
+
