@@ -58,7 +58,7 @@ module.exports = (id)->
   function parseRelation
     type: with (text $ '.sub', @) || parseRelation.type
       parseRelation.type = ..
-    cover: ($ '.avatarNeue', @)attr \style .match /'(.+)'/ .1
+    cover: ($ '.avatarNeue', @)attr \style ?.match /'(.+)'/ .1
     href: href $ '.title' @
     name: text $ '.title' @
 

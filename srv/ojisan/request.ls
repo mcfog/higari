@@ -8,7 +8,7 @@ limiter = new RateLimiter({ tokensPerInterval: 5, interval: 1000 });
 prequest = Promise.promisify request
 
 option =
-  pool: {maxSockets: 5}
+  pool: {maxSockets: (parseInt process.env.MAX_SOCKETS)||3}
 
 module.exports = (url)->
   Promise.resolve limiter.removeTokens 1
